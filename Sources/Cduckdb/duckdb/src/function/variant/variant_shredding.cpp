@@ -43,8 +43,10 @@ static void WriteShreddedDecimal(UnifiedVariantVectorData &variant, Vector &resu
 	}
 }
 
-#ifdef D_ASSERT_IS_ENABLED
-static bool IsVariantStringType(VariantLogicalType type_id) {
+// D_ASSERT maps to plain assert() on non-debug builds, which still
+// requires the expression to type-check — keep this outside the
+// D_ASSERT_IS_ENABLED guard so release builds compile.
+[[maybe_unused]] static bool IsVariantStringType(VariantLogicalType type_id) {
 	switch (type_id) {
 	case VariantLogicalType::GEOMETRY:
 	case VariantLogicalType::BITSTRING:
@@ -56,7 +58,6 @@ static bool IsVariantStringType(VariantLogicalType type_id) {
 		return false;
 	}
 }
-#endif
 
 static void WriteShreddedString(UnifiedVariantVectorData &variant, Vector &result, const SelectionVector &sel,
                                 const SelectionVector &value_index_sel, const SelectionVector &result_sel,
