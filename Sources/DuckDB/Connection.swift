@@ -104,6 +104,17 @@ public final class Connection: Sendable {
     }
   }
   
+  /// Interrupt any query currently in flight on this connection
+  ///
+  /// Interrupts the running query and causes it to abort as soon as
+  /// possible, surfacing as an interrupted-query failure on the calling
+  /// thread. Safe to call from any thread while a query is running;
+  /// a no-op when the connection is idle.
+  public func interrupt() {
+    guard let connection = ptr.pointee else { return }
+    duckdb_interrupt(connection)
+  }
+
   func withCConnection<T>(_ body: (duckdb_connection?) throws -> T) rethrows -> T {
     try body(ptr.pointee)
   }
